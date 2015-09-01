@@ -6,8 +6,9 @@ var app = {
 
 window.app = app;
 
-//var source = $('#calendar-script').html();
-//var template = Handlebars.compile(source);
+//$('.cal1').clndr();
 
-
-$('.cal1').clndr();
+var source = $('#transactions-template').html();
+var template = Handlebars.compile(source);
+var result = template({transactions: transactions});
+$('.transactions').append(result);

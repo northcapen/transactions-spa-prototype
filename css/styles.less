@@ -1,0 +1,118 @@
+.cal1 {
+   margin-left: 10px;
+   margin-top: 10px;
+   float: left;
+   width: 20%;
+}
+
+.transactions {
+  float: left;
+  width: 60%;
+  height: 100%;
+  padding: 10px;
+  border: 1px solid grey;
+}
+
+@maxWidth: 960px;
+@maxHeight: 480px;
+@padding: 24px;
+@gridSize: 48px;
+@bigGridSize: 72px;
+@smallIconSize: 32px;
+@iconSize: 64px;
+@mobileIconSize: 56px;
+@iconFontSize: 12px;
+@cellSize: (@maxHeight - @padding*2)/3;
+@cellPadding: 32px;
+
+@baseFontFamily: 'Formular-Light', sans-serif;
+
+@baseFontSize: 14px;
+@baseLineHeight: 20px;
+@smallFontSize: 0.75rem;
+@mediumFontSize: 1.25rem;
+@bigFontSize: 1.50rem;
+@biggerFontSize: 1.75rem;
+@hugeFontSize: 4rem;
+
+@sansFontFamily: @baseFontFamily;
+@headingsFontFamily: @baseFontFamily;
+@headingsFontWeight: 100;
+
+@pageLight: white;
+@pageDark: black;
+@borderColor: lightgray;
+@pageDarkTransparent: fade(@pageDark, 90%);
+@pageLightTransparent: fade(@pageLight, 30%);
+
+@pageBiege: #FAF9F3;
+@pandaGreen: #64af44;
+@pandaRed: #ff002d;
+@pandaPink: #e86a82;
+@pandaYellow: #fedb38;
+
+.icon-size(@size: @iconSize) {
+  width: @size;
+  height: @size;
+  background-size: @size;
+  line-height: @size;
+}
+
+
+
+li {
+  list-style-type: none;
+  border-bottom: 1px solid @borderColor;
+  text-align: left;
+  height: @padding*3;
+  color: @pageDark;
+  position: relative;
+  line-height: normal;
+
+  .amount {
+    position: absolute;
+    top: @gridSize/3;
+    right: 0;
+    font-family: @baseFontFamily;
+    font-size: @mediumFontSize;
+  }
+
+  .date {
+    position: absolute;
+    bottom: @padding/1.2;
+    right: 0;
+    font-size: @smallFontSize;
+    color: rgba(11, 34, 63, 0.7);
+    text-transform: lowercase;
+  }
+
+  .name, .description {
+    position: absolute;
+    left: @cellPadding*1.75;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 70%;
+  }
+
+  .name {
+    top: @padding/1.2;
+  }
+
+  .description {
+    color: rgba(11, 34, 63, 0.7);
+    bottom: @padding/1.2;
+    font-size: @smallFontSize;
+    html.portrait & {
+      display: none;
+    }
+  }
+
+  .avatar-tag {
+    float: left;
+    .icon-size(@smallIconSize*1.25);
+    font-size: @mediumFontSize;
+    margin-top: @cellPadding/2;
+    text-align: center;
+  }
+}
