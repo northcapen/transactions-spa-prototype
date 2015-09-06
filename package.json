@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "backbone": "^1.2.2",
-    "clndr": "^1.2.16"
+    "clndr": "^1.2.16",
+    "jquery": "^2.1.4",
+    "underscore": "^1.8.3"
   }
 }
