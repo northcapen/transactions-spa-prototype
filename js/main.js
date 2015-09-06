@@ -2,15 +2,8 @@ var app = {
 };
 
 window.app = app;
-
-
 var Backbone = require('backbone');
-
-var FilterModel = Backbone.Model.extend({
-});
-
-
-
+var FilterModel = Backbone.Model.extend({});
 var CalendarView = Backbone.View.extend({
     className: 'cal1',
 
@@ -25,6 +18,8 @@ var CalendarView = Backbone.View.extend({
                 click: function (target) {
                     console.log('click', target);
                     that.model.set({"startDate": target.date, "endDate": target.date.clone().add(1, 'd')});
+                    $('.day').removeClass('selected');
+                    $(target.element).addClass('selected');
                 },
                 onMonthChange: function(month) {
                     console.log('you just went to ' + month.format('MMMM, YYYY'));
