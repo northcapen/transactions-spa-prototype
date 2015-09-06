@@ -42,12 +42,8 @@
 
         <script id="filter-panel-template" type="text/x-handlebars-template">
             <form>
-                  <label title="Date from">
-                      <input name="dateFrom" type="date"/>
-                  </label>
-                  <label title="Date to">
-                    <input name="dateTo" type="date"/>
-                </label>
+                  <label> Date from: <input name="startDate" type="date" value="{{startDate}}"/></label>
+                  <label> Date to: <input name="endDate" type="date" value="{{endDate}}"/></label>
             </form>
         </script>
     </head>

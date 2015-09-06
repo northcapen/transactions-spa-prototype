@@ -36,10 +36,11 @@ var FilterPanel = Backbone.View.extend({
 
     initialize: function() {
         this.render();
+        this.listenTo(this.model, 'change', this.render);
     },
 
     render: function() {
-        this.$el.html(this.template());
+        this.$el.html(this.template({startDate: this.model.get('startDate').format('YYYY-MM-DD'), endDate: this.model.get('endDate').format('YYYY-MM-DD')}));
         return this;
     }
 
@@ -55,17 +56,15 @@ var TransactionsView = Backbone.View.extend({
     },
 
     render: function () {
-        var f = function (tx) {
-            console.log('filter here', moment(tx.time));
+        var transactions = _.filter(this.model, function (tx) {
             return moment(tx.time).isBetween(filter.get("startDate"), filter.get("endDate"));
-        };
-        var transactions = _.filter(this.model, f );
+        } );
         this.$el.html(this.template({transactions: transactions}));
         return this;
     }
 });
 
-var filter = new FilterModel();
+var filter = new FilterModel({startDate: moment(), endDate: moment().add(1, 'd')});
 new CalendarView({model : filter});
 new FilterPanel({model: filter});
 
