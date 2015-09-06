@@ -39,6 +39,15 @@ var FilterPanel = Backbone.View.extend({
         this.listenTo(this.model, 'change', this.render);
     },
 
+    events : {
+       'change' : 'filter'
+    },
+
+    filter : function() {
+       this.model.set('startDate', moment($('input[name=startDate]', this.$el).val()));
+       this.model.set('endDate', moment($('input[name=endDate]', this.$el).val()));
+    },
+
     render: function() {
         this.$el.html(this.template({startDate: this.model.get('startDate').format('YYYY-MM-DD'), endDate: this.model.get('endDate').format('YYYY-MM-DD')}));
         return this;
@@ -52,7 +61,7 @@ var TransactionsView = Backbone.View.extend({
 
     initialize: function() {
       this.render();
-      this.listenTo(filter, 'change', function() { console.log('I am filtering', filter.get("startDate"), filter.get("endDate")); this.render(); } );
+      this.listenTo(filter, 'change', this.render);
     },
 
     render: function () {
