@@ -24,7 +24,7 @@ var CalendarView = Backbone.View.extend({
             clickEvents: {
                 click: function (target) {
                     console.log('click', target);
-                    that.model.set({"startDate": target, "endDate": target});
+                    that.model.set({"startDate": target.date, "endDate": target.date.clone().add(1, 'd')});
                 },
                 onMonthChange: function(month) {
                     console.log('you just went to ' + month.format('MMMM, YYYY'));
