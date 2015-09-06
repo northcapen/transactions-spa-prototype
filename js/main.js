@@ -1,13 +1,11 @@
 var app = {
-
-
-
 };
 
 window.app = app;
 
 //$('.cal1').clndr();
 
+var Backbone = require('backbone');
 
 var TransactionsView = Backbone.View.extend({
 
@@ -20,7 +18,6 @@ var TransactionsView = Backbone.View.extend({
       $('.transactions').html(result);
       return this;
   }
-
 });
 
 var transactionsView = new TransactionsView();
