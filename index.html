@@ -25,7 +25,7 @@
 
         <script id="transactions-template" type="text/x-handlebars-template">
             {{#each transactions}}
-            <li style="cursor: pointer;">
+              <li style="cursor: pointer;">
 
                 <div class="date">{{time}}</div>
 
@@ -36,16 +36,33 @@
                 <div class="description">{{description}}</div>
 
                 <div class="amount negative">{{amount}}&nbsp;{{currency}}</div>
-            </li>
+              </li>
             {{/each}}
+        </script>
+
+        <script id="filter-panel-template" type="text/x-handlebars-template">
+            <form>
+                  <label title="Date from">
+                      <input name="dateFrom" type="date"/>
+                  </label>
+                  <label title="Date to">
+                    <input name="dateTo" type="date"/>
+                </label>
+            </form>
         </script>
     </head>
 
 
     <body>
+      <div class="col-6">
         <div class="cal1"></div>
-        <div class="transactions"></div>
+        <div class="filter-panel"></div>
+      </div>
 
-        <script src="js/dist.js"></script>
+      <div class="col-6">
+        <div class="transactions"></div>
+      </div>
+
+      <script src="js/dist.js"></script>
     </body>
 </html>

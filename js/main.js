@@ -30,6 +30,20 @@ var CalendarView = Backbone.View.extend({
     }
 });
 
+var FilterPanel = Backbone.View.extend({
+    el: '.filter-panel',
+    template: Handlebars.compile($('#filter-panel-template').html()),
+
+    initialize: function() {
+        this.render();
+    },
+
+    render: function() {
+        this.$el.html(this.template());
+        return this;
+    }
+
+});
 
 var TransactionsView = Backbone.View.extend({
     el: '.transactions',
@@ -53,4 +67,6 @@ var TransactionsView = Backbone.View.extend({
 
 var filter = new FilterModel();
 new CalendarView({model : filter});
+new FilterPanel({model: filter});
+
 new TransactionsView({model: transactions, filter: filter});
