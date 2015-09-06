@@ -34,6 +34,7 @@ var CalendarView = Backbone.View.extend({
 
 var TransactionsView = Backbone.View.extend({
     el: '.transactions',
+    template: Handlebars.compile($('#transactions-template').html()),
 
     initialize: function() {
       this.render();
@@ -41,10 +42,7 @@ var TransactionsView = Backbone.View.extend({
     },
 
     render: function () {
-        var source = $('#transactions-template').html();
-        var template = Handlebars.compile(source);
-        var result = template({transactions: transactions});
-        this.$el.html(result);
+        this.$el.html(this.template({transactions: this.model}));
         return this;
     }
 });
