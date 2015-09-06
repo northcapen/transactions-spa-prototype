@@ -24,7 +24,11 @@ var CalendarView = Backbone.View.extend({
             clickEvents: {
                 click: function (target) {
                     console.log('click', target);
-                    that.model.set("day", target);
+                    that.model.set({"startDate": target, "endDate": target});
+                },
+                onMonthChange: function(month) {
+                    console.log('you just went to ' + month.format('MMMM, YYYY'));
+                    that.model.set({"startDate": month, "endDate" : month.clone().endOf("month")});
                 }
             }
         });
@@ -38,11 +42,16 @@ var TransactionsView = Backbone.View.extend({
 
     initialize: function() {
       this.render();
-      this.listenTo(filter, 'change', function() { console.log('I am filtering');});
+      this.listenTo(filter, 'change', function() { console.log('I am filtering', filter.get("startDate"), filter.get("endDate")); this.render(); } );
     },
 
     render: function () {
-        this.$el.html(this.template({transactions: this.model}));
+        var f = function (tx) {
+            console.log('filter here', moment(tx.time));
+            return moment(tx.time).isBetween(filter.get("startDate"), filter.get("endDate"));
+        };
+        var transactions = _.filter(this.model, f );
+        this.$el.html(this.template({transactions: transactions}));
         return this;
     }
 });
