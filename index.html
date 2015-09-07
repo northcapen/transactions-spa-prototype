@@ -24,20 +24,20 @@
         <script src="js/transactions-sample.js"></script>
 
         <script id="transactions-template" type="text/x-handlebars-template">
-            {{#each transactions}}
-              <li style="cursor: pointer;">
-
+            {{#if transactions}}
+              {{#each transactions}}
+                <li style="cursor: pointer;">
                 <div class="date">{{time}}</div>
-
-                <div class="avatar-tag">
-                    P</div>
+                <div class="avatar-tag">P</div>
                 <div class="name">{{partyName}}</div>
-
                 <div class="description">{{description}}</div>
-
                 <div class="amount negative">{{amount}}&nbsp;{{currency}}</div>
               </li>
-            {{/each}}
+              {{/each}}
+            {{else}}
+                No transactions found
+            {{/if}}
+
         </script>
 
         <script id="filter-panel-template" type="text/x-handlebars-template">
