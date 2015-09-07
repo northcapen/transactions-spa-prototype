@@ -72,8 +72,8 @@ var TransactionsView = Backbone.View.extend({
     }
 });
 
-var filter = new FilterModel({startDate: moment(), endDate: moment().add(1, 'd')});
-new CalendarView({model: filter});
-new FilterPanel({model: filter});
 
-new TransactionsView({model: transactions, filter: filter});
+var filterModel = new FilterModel({startDate: moment(), endDate: moment().add(1, 'd')});
+new CalendarView({model: filterModel});
+new FilterPanel({model: filterModel});
+new TransactionsView({model: transactions, filter: filterModel});
