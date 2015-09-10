@@ -40,17 +40,27 @@ var FilterPanel = Backbone.View.extend({
     },
 
     events: {
-        'change': 'filter'
+        'change': 'filter',
+        'submit' : 'submit'
     },
 
     filter: function () {
-        this.model.set('startDate', moment($('input[name=startDate]', this.$el).val()));
-        this.model.set('endDate', moment($('input[name=endDate]', this.$el).val()));
+        this.model.set({
+                          'startDate': moment($('input[name=startDate]', this.$el).val()),
+                          'endDate': moment($('input[name=endDate]', this.$el).val()),
+                          'details': $('input[name=details]', this.$el).val()
+                       });
     },
 
     render: function () {
-        this.$el.html(this.template({startDate: this.model.get('startDate').format('YYYY-MM-DD'), endDate: this.model.get('endDate').format('YYYY-MM-DD')}));
+        this.$el.html(this.template({startDate: this.model.get('startDate').format('YYYY-MM-DD'),
+                                     endDate: this.model.get('endDate').format('YYYY-MM-DD'),
+                                     details: this.model.get('details')}));
         return this;
+    },
+
+    submit : function(e) {
+        e.preventDefault();
     }
 });
 
@@ -59,13 +69,15 @@ var TransactionsView = Backbone.View.extend({
     template: Handlebars.compile($('#transactions-template').html()),
 
     initialize: function () {
-        this.listenTo(filter, 'change', this.render);
+        this.listenTo(filterModel, 'change', this.render);
         this.render();
     },
 
     render: function () {
+        var filter = filterModel;
         var transactions = _.filter(this.model, function (tx) {
-            return moment(tx.time).isBetween(filter.get("startDate"), filter.get("endDate"));
+            var text = filter.get('details');
+            return moment(tx.time).isBetween(filter.get("startDate"), filter.get("endDate")) &&  (!text || (tx.description +  ' ' + tx.partyName).toLowerCase().indexOf(text.toLowerCase()) > 0);
         });
         this.$el.html(this.template({transactions: transactions}));
         return this;

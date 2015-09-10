@@ -41,9 +41,12 @@
         </script>
 
         <script id="filter-panel-template" type="text/x-handlebars-template">
-            <form>
+            <form action="noaction">
                   <label> Date from: <input name="startDate" type="date" value="{{startDate}}"/></label>
                   <label> Date to: <input name="endDate" type="date" value="{{endDate}}"/></label>
+                  <div>
+                    <label>Find transaction: <input name="details" type="text" value="{{details}}"/></label>
+                  </div>
             </form>
         </script>
     </head>
