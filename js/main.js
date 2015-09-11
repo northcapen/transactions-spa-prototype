@@ -114,13 +114,14 @@ var TransactionsView = Backbone.View.extend({
     el: '.transactions',
     template: Handlebars.compile($('#transactions-template').html()),
 
-    initialize: function () {
-        this.listenTo(filterModel, 'change', this.render);
+    initialize: function (options) {
+        this.filter = options.filter;
+        this.listenTo(this.filter, 'change', this.render);
         this.render();
     },
 
     render: function () {
-        this.$el.html(this.template({transactions: transactionsHelper.filterTransactions(filterModel)}));
+        this.$el.html(this.template({transactions: transactionsHelper.filterTransactions(this.filter)}));
         return this;
     }
 });
