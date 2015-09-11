@@ -9,7 +9,13 @@ if (window.__backboneAgent) {
     window.__backboneAgent.handleBackbone(Backbone);
 }
 
-var FilterModel = Backbone.Model.extend({});
+var FilterModel = Backbone.Model.extend({
+    defaults: {
+        startDate: moment(),
+        endDate: moment().add(1, 'd')
+    }
+});
+
 var CalendarView = Backbone.View.extend({
     className: 'cal1',
 
@@ -61,7 +67,7 @@ var HeatmapView = Backbone.View.extend({
     }
 });
 
-var FilterPanel = Backbone.View.extend({
+var FilterPanelView = Backbone.View.extend({
     el: '.filter-panel',
     template: Handlebars.compile($('#filter-panel-template').html()),
 
@@ -132,7 +138,7 @@ var transactionsHelper = {
     }
 };
 
-var filterModel = new FilterModel({startDate: moment(), endDate: moment().add(1, 'd')});
+var filterModel = new FilterModel();
 new CalendarView({model: filterModel});
-new FilterPanel({model: filterModel});
+new FilterPanelView({model: filterModel});
 new TransactionsView({model: transactions, filter: filterModel});
