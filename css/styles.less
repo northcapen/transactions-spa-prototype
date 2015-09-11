@@ -7,8 +7,21 @@
    margin-left: 10px;
    margin-top: 10px;
 
-   .clndr .clndr-table tr .day.selected {
-     background: #9AD6AA;
+   .clndr .clndr-table tr .day {
+
+     .counter {
+        border-radius: 50%;
+        background-color: lightpink;
+        text-align: center;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        margin: 0 auto;
+     }
+
+      &.selected {
+        background: #9AD6AA;
+      }
    }
 }
 

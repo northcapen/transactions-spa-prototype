@@ -30,8 +30,33 @@ var CalendarView = Backbone.View.extend({
                 },
                 onMonthChange: function (month) {
                     that.model.set({"startDate": month, "endDate": month.clone().endOf("month")});
+                    new HeatmapView();
                 }
             }
+        });
+        new HeatmapView();
+    }
+});
+
+var HeatmapView = Backbone.View.extend({
+    className: 'cal1',
+
+    initialize: function () {
+        this.render();
+    },
+
+    render: function() {
+        var findDay = function (el) {
+            return moment($(el).attr('class').split(' ').filter(function(c) { return c.startsWith('calendar-day-'); })[0]
+            .substring('calendar-day-'.length));
+        };
+
+        $('.day').append(function() {
+            var transactions = transactionsHelper.filterTransactionsPerDay(findDay($(this))).length;
+            if (transactions) {
+                return '<div class="counter">' + transactions + '</div>';
+            }
+            return;
         });
     }
 });
@@ -99,6 +124,18 @@ var TransactionsView = Backbone.View.extend({
     }
 });
 
+var transactionsHelper = {
+    filterTransactionsPerDay : function (day) {
+         return this.filterTransactions(new FilterModel({startDate: day, endDate: day.clone().add(1, 'd')}));
+    },
+
+    filterTransactions: function(filter) {
+        return _.filter(transactions, function (tx) {
+            var text = filter.get('details');
+            return moment(tx.time).isBetween(filter.get("startDate"), filter.get("endDate")) &&  (!text || (tx.description +  ' ' + tx.partyName).toLowerCase().indexOf(text.toLowerCase()) > 0);
+        });
+    }
+};
 
 var filterModel = new FilterModel({startDate: moment(), endDate: moment().add(1, 'd')});
 new CalendarView({model: filterModel});
