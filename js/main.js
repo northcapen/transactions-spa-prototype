@@ -3,6 +3,12 @@ var app = {
 window.app = app;
 
 var Backbone = require('backbone');
+
+// Add this!
+if (window.__backboneAgent) {
+    window.__backboneAgent.handleBackbone(Backbone);
+}
+
 var FilterModel = Backbone.Model.extend({});
 var CalendarView = Backbone.View.extend({
     className: 'cal1',
@@ -40,16 +46,18 @@ var FilterPanel = Backbone.View.extend({
     },
 
     events: {
+      //  'keyup' : 'processKey',
         'change': 'filter',
-        'submit' : 'submit'
+        'submit form' : 'submit'
     },
 
-    filter: function () {
+    filter: function (e) {
         this.model.set({
                           'startDate': moment($('input[name=startDate]', this.$el).val()),
                           'endDate': moment($('input[name=endDate]', this.$el).val()),
                           'details': $('input[name=details]', this.$el).val()
                        });
+        return false;
     },
 
     render: function () {
@@ -59,7 +67,14 @@ var FilterPanel = Backbone.View.extend({
         return this;
     },
 
+   /* processKey: function(e) {
+        if(e.which === 13) {
+            this.submit();
+        }// enter key
+    },
+*/
     submit : function(e) {
+        console.log('submit form');
         e.preventDefault();
     }
 });
