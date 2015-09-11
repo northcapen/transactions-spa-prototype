@@ -110,6 +110,10 @@ var FilterPanelView = Backbone.View.extend({
     }
 });
 
+var TransactionsCollection = Backbone.Collection.extend({
+     url: 'http://localhost:3000/transactions'
+});
+
 var TransactionsView = Backbone.View.extend({
     el: '.transactions',
     template: Handlebars.compile($('#transactions-template').html()),
@@ -117,6 +121,8 @@ var TransactionsView = Backbone.View.extend({
     initialize: function (options) {
         this.filter = options.filter;
         this.listenTo(this.filter, 'change', this.render);
+
+        this.model.fetch();
         this.render();
     },
 
@@ -139,7 +145,8 @@ var transactionsHelper = {
     }
 };
 
+var transactions2 = new TransactionsCollection();
 var filterModel = new FilterModel();
 new CalendarView({model: filterModel});
 new FilterPanelView({model: filterModel});
-new TransactionsView({model: transactions, filter: filterModel});
+new TransactionsView({model: transactions2, filter: filterModel});
