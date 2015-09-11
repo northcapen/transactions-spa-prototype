@@ -138,7 +138,7 @@ var transactionsHelper = {
     },
 
     filterTransactions: function(filter) {
-        return _.filter(transactions, function (tx) {
+        return _.filter(transactions2, function (tx) {
             var text = filter.get('details');
             return moment(tx.time).isBetween(filter.get("startDate"), filter.get("endDate")) &&  (!text || (tx.description +  ' ' + tx.partyName).toLowerCase().indexOf(text.toLowerCase()) > 0);
         });
