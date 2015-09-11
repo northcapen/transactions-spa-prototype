@@ -114,12 +114,7 @@ var TransactionsView = Backbone.View.extend({
     },
 
     render: function () {
-        var filter = filterModel;
-        var transactions = _.filter(this.model, function (tx) {
-            var text = filter.get('details');
-            return moment(tx.time).isBetween(filter.get("startDate"), filter.get("endDate")) &&  (!text || (tx.description +  ' ' + tx.partyName).toLowerCase().indexOf(text.toLowerCase()) > 0);
-        });
-        this.$el.html(this.template({transactions: transactions}));
+        this.$el.html(this.template({transactions: transactionsHelper.filterTransactions(filterModel)}));
         return this;
     }
 });
