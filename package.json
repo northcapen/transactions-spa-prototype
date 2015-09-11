@@ -4,7 +4,8 @@
   "description": "Backbone sample project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch-js": "watchify js/main.js -o js/dist.js -v"
   },
   "author": "",
   "license": "ISC",
@@ -13,5 +14,9 @@
     "clndr": "^1.2.16",
     "jquery": "^2.1.4",
     "underscore": "^1.8.3"
+  },
+  "devDependencies" : {
+      "watchify": "latest",
+      "browserify": "latest"
   }
 }
