@@ -36,11 +36,11 @@ var CalendarView = Backbone.View.extend({
                 },
                 onMonthChange: function (month) {
                     that.model.set({"startDate": month, "endDate": month.clone().endOf("month")});
-                    new HeatmapView();
+                    //new HeatmapView();
                 }
             }
         });
-        new HeatmapView();
+        //new HeatmapView();
     }
 });
 
@@ -111,23 +111,36 @@ var FilterPanelView = Backbone.View.extend({
 });
 
 var TransactionsCollection = Backbone.Collection.extend({
-     url: 'http://localhost:3000/transactions'
-});
+     url: 'http://localhost:3000/transactions',
 
+     initialize: function(options) {
+         this.txFilter = options.filter;
+
+         this.listenTo(options.filter, 'change', this.load);
+     },
+
+    load: function () {
+        var t = {
+            data: {
+                startDate: this.txFilter.get('startDate').format('YYYY-MM-DD'),
+                endDate: this.txFilter.get('endDate').format('YYYY-MM-DD')
+            }
+        };
+        this.fetch(t);
+    }
+   }
+);
 var TransactionsView = Backbone.View.extend({
     el: '.transactions',
     template: Handlebars.compile($('#transactions-template').html()),
 
     initialize: function (options) {
-        this.filter = options.filter;
-        this.listenTo(this.filter, 'change', this.render);
-
-        this.model.fetch();
-        this.render();
+        this.listenTo(this.collection, 'update', this.render);
+        //this.render();
     },
 
     render: function () {
-        this.$el.html(this.template({transactions: transactionsHelper.filterTransactions(this.filter)}));
+        this.$el.html(this.template({transactions: this.collection.toJSON()}));
         return this;
     }
 });
@@ -138,15 +151,15 @@ var transactionsHelper = {
     },
 
     filterTransactions: function(filter) {
-        return _.filter(transactions2, function (tx) {
+        return transactions2.filter(function (tx) {
             var text = filter.get('details');
             return moment(tx.time).isBetween(filter.get("startDate"), filter.get("endDate")) &&  (!text || (tx.description +  ' ' + tx.partyName).toLowerCase().indexOf(text.toLowerCase()) > 0);
         });
     }
 };
 
-var transactions2 = new TransactionsCollection();
 var filterModel = new FilterModel();
+var transactionsCollection = new TransactionsCollection({filter: filterModel});
 new CalendarView({model: filterModel});
 new FilterPanelView({model: filterModel});
-new TransactionsView({model: transactions2, filter: filterModel});
+new TransactionsView({collection: transactionsCollection, filter: filterModel});
