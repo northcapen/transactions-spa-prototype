@@ -134,9 +134,8 @@ var TransactionsView = Backbone.View.extend({
     el: '.transactions',
     template: Handlebars.compile($('#transactions-template').html()),
 
-    initialize: function (options) {
+    initialize: function () {
         this.listenTo(this.collection, 'update', this.render);
-        //this.render();
     },
 
     render: function () {
