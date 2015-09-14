@@ -9,6 +9,8 @@ if (window.__backboneAgent) {
     window.__backboneAgent.handleBackbone(Backbone);
 }
 
+
+
 var FilterModel = Backbone.Model.extend({
     defaults: {
         startDate: moment(),
@@ -23,6 +25,37 @@ var FilterModel = Backbone.Model.extend({
         };
     }
 });
+
+var TransactionsCollection = Backbone.Collection.extend({
+        url: 'http://localhost:3000/transactions',
+
+        initialize: function(options) {
+            this.txFilter = options.filter;
+            this.listenTo(options.filter, 'change', this.load);
+        },
+
+        load: function () {
+            this.fetch({data: this.txFilter.toJSON()});
+        },
+
+        filtered: function() {
+            return new TransactionsCollection(this.filterTransactions(this.txFilter));
+        },
+
+        filterTransactions: function(txFilter) {
+            txFilter = txFilter.toJSON();
+            var text = txFilter.details;
+            return this.filter(function (tx) {
+                return moment(tx.get('time')).isBetween(txFilter.startDate, txFilter.endDate) && (!text || (tx.get('description') + ' ' + tx.get('partyName')).toLowerCase().indexOf(text.toLowerCase()) > 0);
+            });
+        },
+
+        filterTransactionsPerDay : function (day) {
+            return this.filterTransactions(new FilterModel({startDate: day, endDate: day.clone().add(1, 'd')}));
+        }
+    }
+);
+
 
 var CalendarView = Backbone.View.extend({
     className: 'cal1',
@@ -115,36 +148,6 @@ var FilterPanelView = Backbone.View.extend({
         e.preventDefault();
     }
 });
-
-var TransactionsCollection = Backbone.Collection.extend({
-        url: 'http://localhost:3000/transactions',
-
-        initialize: function(options) {
-            this.txFilter = options.filter;
-            this.listenTo(options.filter, 'change', this.load);
-        },
-
-        load: function () {
-            this.fetch({data: this.txFilter.toJSON()});
-        },
-
-        filtered: function() {
-            return new TransactionsCollection(this.filterTransactions(this.txFilter));
-        },
-
-        filterTransactions: function(txFilter) {
-            txFilter = txFilter.toJSON();
-            var text = txFilter.details;
-            return this.filter(function (tx) {
-                return moment(tx.get('time')).isBetween(txFilter.startDate, txFilter.endDate) && (!text || (tx.get('description') + ' ' + tx.get('partyName')).toLowerCase().indexOf(text.toLowerCase()) > 0);
-            });
-        },
-
-        filterTransactionsPerDay : function (day) {
-            return this.filterTransactions(new FilterModel({startDate: day, endDate: day.clone().add(1, 'd')}));
-        }
-    }
-);
 
 var TransactionsView = Backbone.View.extend({
     el: '.transactions',
