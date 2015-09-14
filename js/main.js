@@ -77,11 +77,9 @@ var CalendarView = Backbone.View.extend({
                 },
                 onMonthChange: function (month) {
                     that.model.set({"startDate": month, "endDate": month.clone().endOf("month")});
-                    //new HeatmapView();
                 }
             }
         });
-        //new HeatmapView();
     }
 });
 
@@ -89,19 +87,20 @@ var HeatmapView = Backbone.View.extend({
     className: 'cal1',
 
     initialize: function () {
-        this.render();
+        this.listenTo(this.collection, 'update', this.render);
+    },
+
+    extractDay: function(el) {
+        return moment($(el).attr('class').split(' ').filter(function(c) { return c.startsWith('calendar-day-'); })[0]
+            .substring('calendar-day-'.length));
     },
 
     render: function() {
-        var findDay = function (el) {
-            return moment($(el).attr('class').split(' ').filter(function(c) { return c.startsWith('calendar-day-'); })[0]
-            .substring('calendar-day-'.length));
-        };
-
+        var heatmap = this;
         $('.day').append(function() {
-            var transactions = transactionsHelper.filterTransactionsPerDay(findDay($(this))).length;
-            if (transactions) {
-                return '<div class="counter">' + transactions + '</div>';
+            var num = heatmap.collection.filterTransactionsPerDay(heatmap.extractDay($(this))).length;
+            if (num) {
+                return '<div class="counter">' + num + '</div>';
             }
             return;
         });
@@ -166,5 +165,7 @@ var TransactionsView = Backbone.View.extend({
 var filterModel = new FilterModel();
 var transactionsCollection = new TransactionsCollection({filter: filterModel});
 new CalendarView({model: filterModel});
+new HeatmapView({collection: transactionsCollection});
+
 new FilterPanelView({model: filterModel});
 new TransactionsView({collection: transactionsCollection, filter: filterModel});
