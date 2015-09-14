@@ -111,25 +111,41 @@ var FilterPanelView = Backbone.View.extend({
 });
 
 var TransactionsCollection = Backbone.Collection.extend({
-     url: 'http://localhost:3000/transactions',
+        url: 'http://localhost:3000/transactions',
 
-     initialize: function(options) {
-         this.txFilter = options.filter;
+        initialize: function(options) {
+            this.txFilter = options.filter;
+            this.listenTo(options.filter, 'change', this.load);
+        },
 
-         this.listenTo(options.filter, 'change', this.load);
-     },
+        load: function () {
+            this.fetch({
+                data: {
+                    startDate: this.txFilter.get('startDate').format('YYYY-MM-DD'),
+                    endDate: this.txFilter.get('endDate').format('YYYY-MM-DD')
+                }
+            });
+        },
 
-    load: function () {
-        var t = {
-            data: {
-                startDate: this.txFilter.get('startDate').format('YYYY-MM-DD'),
-                endDate: this.txFilter.get('endDate').format('YYYY-MM-DD')
-            }
-        };
-        this.fetch(t);
+        filtered: function() {
+            return new TransactionsCollection(this.filterTransactions(this.txFilter));
+        },
+
+        filterTransactions: function(txFilter) {
+            var startDate = txFilter.get("startDate");
+            var endDate = txFilter.get("endDate");
+            var text = txFilter.get('details');
+            return this.filter(function (tx) {
+                return moment(tx.get('time')).isBetween(startDate, endDate) && (!text || (tx.description + ' ' + tx.partyName).toLowerCase().indexOf(text.toLowerCase()) > 0);
+            });
+        },
+
+        filterTransactionsPerDay : function (day) {
+            return this.filterTransactions(new FilterModel({startDate: day, endDate: day.clone().add(1, 'd')}));
+        }
     }
-   }
 );
+
 var TransactionsView = Backbone.View.extend({
     el: '.transactions',
     template: Handlebars.compile($('#transactions-template').html()),
@@ -139,23 +155,10 @@ var TransactionsView = Backbone.View.extend({
     },
 
     render: function () {
-        this.$el.html(this.template({transactions: this.collection.toJSON()}));
+        this.$el.html(this.template({transactions: this.collection.filtered().toJSON()}));
         return this;
     }
 });
-
-var transactionsHelper = {
-    filterTransactionsPerDay : function (day) {
-         return this.filterTransactions(new FilterModel({startDate: day, endDate: day.clone().add(1, 'd')}));
-    },
-
-    filterTransactions: function(filter) {
-        return transactions2.filter(function (tx) {
-            var text = filter.get('details');
-            return moment(tx.time).isBetween(filter.get("startDate"), filter.get("endDate")) &&  (!text || (tx.description +  ' ' + tx.partyName).toLowerCase().indexOf(text.toLowerCase()) > 0);
-        });
-    }
-};
 
 var filterModel = new FilterModel();
 var transactionsCollection = new TransactionsCollection({filter: filterModel});
