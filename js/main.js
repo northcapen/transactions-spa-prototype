@@ -13,6 +13,14 @@ var FilterModel = Backbone.Model.extend({
     defaults: {
         startDate: moment(),
         endDate: moment().add(1, 'd')
+    },
+
+    toJSON: function() {
+        return {
+            startDate: this.get('startDate').format('YYYY-MM-DD'),
+            endDate: this.get('endDate').format('YYYY-MM-DD'),
+            details: this.get('details')
+        };
     }
 });
 
@@ -92,9 +100,7 @@ var FilterPanelView = Backbone.View.extend({
     },
 
     render: function () {
-        this.$el.html(this.template({startDate: this.model.get('startDate').format('YYYY-MM-DD'),
-                                     endDate: this.model.get('endDate').format('YYYY-MM-DD'),
-                                     details: this.model.get('details')}));
+        this.$el.html(this.template(this.model.toJSON()));
         return this;
     },
 
@@ -119,12 +125,7 @@ var TransactionsCollection = Backbone.Collection.extend({
         },
 
         load: function () {
-            this.fetch({
-                data: {
-                    startDate: this.txFilter.get('startDate').format('YYYY-MM-DD'),
-                    endDate: this.txFilter.get('endDate').format('YYYY-MM-DD')
-                }
-            });
+            this.fetch({data: this.txFilter.toJSON()});
         },
 
         filtered: function() {
@@ -132,11 +133,10 @@ var TransactionsCollection = Backbone.Collection.extend({
         },
 
         filterTransactions: function(txFilter) {
-            var startDate = txFilter.get("startDate");
-            var endDate = txFilter.get("endDate");
-            var text = txFilter.get('details');
+            txFilter = txFilter.toJSON();
+            var text = txFilter.details;
             return this.filter(function (tx) {
-                return moment(tx.get('time')).isBetween(startDate, endDate) && (!text || (tx.description + ' ' + tx.partyName).toLowerCase().indexOf(text.toLowerCase()) > 0);
+                return moment(tx.get('time')).isBetween(txFilter.startDate, txFilter.endDate) && (!text || (tx.get('description') + ' ' + tx.get('partyName')).toLowerCase().indexOf(text.toLowerCase()) > 0);
             });
         },
 
