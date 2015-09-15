@@ -31,11 +31,14 @@ var TransactionsCollection = Backbone.Collection.extend({
 
         initialize: function(options) {
             this.txFilter = options.filter;
-            this.listenTo(options.filter, 'change', this.load);
+            this.listenTo(options.filter, 'changemonth', this.load);
         },
 
         load: function () {
-            this.fetch({data: this.txFilter.toJSON()});
+            var that = this;
+            this.fetch({data: this.txFilter.toJSON(), success: function() {
+                console.log('New transactions loaded ', that.length);
+            }});
         },
 
         filtered: function() {
@@ -60,26 +63,28 @@ var TransactionsCollection = Backbone.Collection.extend({
 var CalendarView = Backbone.View.extend({
     className: 'cal1',
 
-    initialize: function () {
+    initialize: function (options) {
+        this.filter = options.filter;
         this.render();
     },
 
     render: function () {
-        var that = this;
+        var filter = this.filter;
         $('.cal1').clndr({
             clickEvents: {
                 click: function (target) {
-                    console.log('click', target);
-                    that.model.set({"startDate": target.date, "endDate": target.date.clone().add(1, 'd')});
+                    filter.set({"startDate": target.date, "endDate": target.date.clone().add(1, 'd')});
 
                     $('.day').removeClass('selected');
                     $(target.element).addClass('selected');
                 },
                 onMonthChange: function (month) {
-                    that.model.set({"startDate": month, "endDate": month.clone().endOf("month")});
+                    filter.set({"startDate": month, "endDate": month.clone().endOf("month")});
+                    filter.trigger('changemonth');
                 }
             }
         });
+        filter.trigger('changemonth');
     }
 });
 
@@ -111,28 +116,29 @@ var FilterPanelView = Backbone.View.extend({
     el: '.filter-panel',
     template: Handlebars.compile($('#filter-panel-template').html()),
 
-    initialize: function () {
+    initialize: function (options) {
+        this.filter = options.filter;
+        this.listenTo(this.filter, 'change', this.render);
         this.render();
-        this.listenTo(this.model, 'change', this.render);
     },
 
     events: {
       //  'keyup' : 'processKey',
-        'change': 'filter',
+        'change': 'change',
         'submit form' : 'submit'
     },
 
-    filter: function (e) {
-        this.model.set({
-                          'startDate': moment($('input[name=startDate]', this.$el).val()),
-                          'endDate': moment($('input[name=endDate]', this.$el).val()),
-                          'details': $('input[name=details]', this.$el).val()
-                       });
+    change: function (e) {
+        this.filter.set({
+            'startDate': moment($('input[name=startDate]', this.$el).val()),
+            'endDate': moment($('input[name=endDate]', this.$el).val()),
+            'details': $('input[name=details]', this.$el).val()
+        });
         return false;
     },
 
     render: function () {
-        this.$el.html(this.template(this.model.toJSON()));
+        this.$el.html(this.template(this.filter.toJSON()));
         return this;
     },
 
@@ -152,7 +158,8 @@ var TransactionsView = Backbone.View.extend({
     el: '.transactions',
     template: Handlebars.compile($('#transactions-template').html()),
 
-    initialize: function () {
+    initialize: function (options) {
+        this.listenTo(options.filter, 'change', this.render);
         this.listenTo(this.collection, 'update', this.render);
     },
 
@@ -164,8 +171,8 @@ var TransactionsView = Backbone.View.extend({
 
 var filterModel = new FilterModel();
 var transactionsCollection = new TransactionsCollection({filter: filterModel});
-new CalendarView({model: filterModel});
-new HeatmapView({collection: transactionsCollection});
 
-new FilterPanelView({model: filterModel});
+new CalendarView({filter: filterModel});
+new HeatmapView({collection: transactionsCollection});
+new FilterPanelView({filter: filterModel});
 new TransactionsView({collection: transactionsCollection, filter: filterModel});
