@@ -2,14 +2,14 @@ var app = {
 };
 window.app = app;
 
+var moment = require('moment');
+var momentRange = require('moment-range');
 var Backbone = require('backbone');
 
 // Add this!
 if (window.__backboneAgent) {
     window.__backboneAgent.handleBackbone(Backbone);
 }
-
-
 
 var FilterModel = Backbone.Model.extend({
     defaults: {
@@ -23,21 +23,29 @@ var FilterModel = Backbone.Model.extend({
             endDate: this.get('endDate').format('YYYY-MM-DD'),
             details: this.get('details')
         };
+    },
+
+    toRange: function() {
+       return moment.range(this.get('startDate').clone(), this.get('endDate').clone());
     }
 });
 
 var TransactionsCollection = Backbone.Collection.extend({
         url: 'http://localhost:3000/transactions',
 
-        initialize: function(options) {
+        initialize: function(models, options) {
+            if(!options) return;
             this.txFilter = options.filter;
-            this.listenTo(options.filter, 'changemonth', this.load);
+            this.listenTo(options.filter, 'change', this.load);
         },
 
         load: function () {
+            if(this.loadedFilterRange && this.loadedFilterRange.contains(this.txFilter.toRange().start) && this.loadedFilterRange.contains(this.txFilter.toRange().end)) return;
+
             var that = this;
             this.fetch({data: this.txFilter.toJSON(), success: function() {
-                console.log('New transactions loaded ', that.length);
+                that.loadedFilterRange = that.txFilter.toRange();
+                console.log('New transactions loaded ', that.length, ' for range ', that.loadedFilterRange);
             }});
         },
 
@@ -80,11 +88,10 @@ var CalendarView = Backbone.View.extend({
                 },
                 onMonthChange: function (month) {
                     filter.set({"startDate": month, "endDate": month.clone().endOf("month")});
-                    filter.trigger('changemonth');
                 }
             }
         });
-        filter.trigger('changemonth');
+        filter.trigger('change');
     }
 });
 
@@ -159,7 +166,6 @@ var TransactionsView = Backbone.View.extend({
     template: Handlebars.compile($('#transactions-template').html()),
 
     initialize: function (options) {
-        this.listenTo(options.filter, 'change', this.render);
         this.listenTo(this.collection, 'update', this.render);
     },
 
@@ -170,7 +176,7 @@ var TransactionsView = Backbone.View.extend({
 });
 
 var filterModel = new FilterModel();
-var transactionsCollection = new TransactionsCollection({filter: filterModel});
+var transactionsCollection = new TransactionsCollection([], {filter: filterModel});
 
 new CalendarView({filter: filterModel});
 new HeatmapView({collection: transactionsCollection});

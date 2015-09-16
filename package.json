@@ -15,8 +15,10 @@
     "jquery": "^2.1.4",
     "underscore": "^1.8.3"
   },
-  "devDependencies" : {
-      "watchify": "latest",
-      "browserify": "latest"
+  "devDependencies": {
+    "browserify": "latest",
+    "moment": "^2.10.6",
+    "moment-range": "^2.0.3",
+    "watchify": "latest"
   }
 }
