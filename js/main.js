@@ -48,6 +48,7 @@ var TransactionsCollection = Backbone.Collection.extend({
             var collection = this;
             this.fetch({data: this.txFilter.toJSON(), success: function() {
                 collection.loadedFilterRange = collection.txFilter.toRange();
+                collection.trigger('update');
                 collection.trigger('reset');
                 console.log('New ', collection.length,  ' transactions loaded ', ' for range ', collection.loadedFilterRange);
             }});
