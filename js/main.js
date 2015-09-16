@@ -36,16 +36,20 @@ var TransactionsCollection = Backbone.Collection.extend({
         initialize: function(models, options) {
             if(!options) return;
             this.txFilter = options.filter;
-            this.listenTo(options.filter, 'change', this.load);
+            this.listenTo(options.filter, 'change', this.processFilterChange);
         },
 
-        load: function () {
-            if(this.loadedFilterRange && this.loadedFilterRange.contains(this.txFilter.toRange().start) && this.loadedFilterRange.contains(this.txFilter.toRange().end)) return;
+        processFilterChange: function() {
+            if(this.loadedFilterRange && this.loadedFilterRange.contains(this.txFilter.toRange().start) && this.loadedFilterRange.contains(this.txFilter.toRange().end)) {
+                this.trigger('update');
+                return;
+            }
 
-            var that = this;
+            var collection = this;
             this.fetch({data: this.txFilter.toJSON(), success: function() {
-                that.loadedFilterRange = that.txFilter.toRange();
-                console.log('New transactions loaded ', that.length, ' for range ', that.loadedFilterRange);
+                collection.loadedFilterRange = collection.txFilter.toRange();
+                collection.trigger('reset');
+                console.log('New ', collection.length,  ' transactions loaded ', ' for range ', collection.loadedFilterRange);
             }});
         },
 
@@ -99,7 +103,7 @@ var HeatmapView = Backbone.View.extend({
     className: 'cal1',
 
     initialize: function () {
-        this.listenTo(this.collection, 'update', this.render);
+        this.listenTo(this.collection, 'reset', this.render);
     },
 
     extractDay: function(el) {
