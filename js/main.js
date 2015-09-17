@@ -5,6 +5,7 @@ window.app = app;
 var moment = require('moment');
 var momentRange = require('moment-range');
 var Backbone = require('backbone');
+var Handlebars = require('handlebars');
 
 // Add this!
 if (window.__backboneAgent) {
