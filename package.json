@@ -5,11 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch-js": "watchify js/main.js -o js/dist.js -v"
+    "watch-js": "watchify js/main.js -o js/dist.js -v",
+    "watch-js-amp": "watchify js/main-amp.js -o js/dist-amp.js -v"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ampersand-model": "^6.0.1",
+    "ampersand-view": "^8.0.1",
     "backbone": "^1.2.2",
     "clndr": "^1.2.16",
     "handlebars": "^4.0.2",
