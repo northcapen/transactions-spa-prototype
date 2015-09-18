@@ -11,7 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ampersand-collection": "^1.5.0",
     "ampersand-model": "^6.0.1",
+    "ampersand-rest-collection": "^5.0.0",
     "ampersand-view": "^8.0.1",
     "backbone": "^1.2.2",
     "clndr": "^1.2.16",
