@@ -48,7 +48,6 @@ var CalendarView = AmpersandView.extend({
                 }
             }
         });
-        filter.trigger('change');
     }
 });
 
@@ -59,7 +58,9 @@ var FilterPanelView = AmpersandView.extend({
     initialize: function (options) {
         this.filter = options.filter;
         this.listenTo(this.filter, 'change', this.render);
-        this.render();
+
+        // who is responsible for this?
+        setTimeout(function(){options.filter.trigger('change');}, 0);
     },
 
     events: {
@@ -76,6 +77,7 @@ var FilterPanelView = AmpersandView.extend({
         return false;
     },
 
+    //can I remove it?
     render: function () {
         this.renderWithTemplate(this.filter.toJSON());
         return this;
@@ -89,15 +91,8 @@ var FilterPanelView = AmpersandView.extend({
 var TransactionsHeader = AmpersandView.extend({
     template: Handlebars.compile($('#transaction-header').html()),
 
-    initialize: function (options) {
-        this.model = options.model;
+    initialize: function () {
         this.listenTo(this.model, 'change', this.render);
-        this.render();
-    },
-
-    render: function() {
-       this.renderWithTemplate(this);
-       return this;
     },
 
     bindings: {
