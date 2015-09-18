@@ -64,27 +64,23 @@ var FilterPanelView = AmpersandView.extend({
     },
 
     events: {
-        'change' : 'change',
+        'change [name=startDate]' : 'changeStartDate',
+        'change [name=endDate]' : 'changeEndDate',
         'submit form' : 'submit'
     },
 
-    change: function (e) {
-        this.filter.set({
-            'startDate': moment($('input[name=startDate]', this.$el).val()),
-            'endDate': moment($('input[name=endDate]', this.$el).val()),
-            'details': $('input[name=details]', this.$el).val()
-        });
-        return false;
+    changeStartDate: function(e) {
+      this.filter.startDate = moment($(e.target).val());
+    },
+
+    changeEndDate: function(e) {
+        this.filter.endDate = moment($(e.target).val());
     },
 
     //can I remove it?
     render: function () {
         this.renderWithTemplate(this.filter.toJSON());
         return this;
-    },
-
-    submit : function(e) {
-        e.preventDefault();
     }
 });
 
