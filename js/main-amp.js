@@ -86,8 +86,38 @@ var FilterPanelView = AmpersandView.extend({
     }
 });
 
+var TransactionsHeader = AmpersandView.extend({
+    template: Handlebars.compile($('#transaction-header').html()),
+
+    initialize: function (options) {
+        this.model = options.model;
+        this.listenTo(this.model, 'change', this.render);
+        this.render();
+    },
+
+    render: function() {
+       this.renderWithTemplate(this);
+       return this;
+    },
+
+    bindings: {
+        'model.startDate' : {
+            type: function(el, value) { return this.printDate(el, value)},
+            selector: '.from'
+        },
+        'model.endDate' : {
+            type: function(el, value) { return this.printDate(el, value)},
+            'selector': '.to'
+        }
+    },
+
+    printDate: function(el, value) {
+        $(el).text(value.format('DD MMMM'));
+    }
+});
+
 var filterModel = new FilterModel();
 new CalendarView({filter: filterModel});
 new FilterPanelView({filter: filterModel, el: $('.filter-panel').get(0)});
-//new TransactionsHeader({model: filterModel, el: $('.header').get(0)});
+new TransactionsHeader({model: filterModel, el: $('.header').get(0)});
 
