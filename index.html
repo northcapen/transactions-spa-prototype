@@ -45,6 +45,12 @@
                   <button type="submit">Filter</button>
             </form>
         </script>
+
+        <script id="transaction-header" type="text/x-handlebars-template">
+            <div>
+                <span class="from"></span> - <span class="to"></span>
+            </div>
+        </script>
     </head>
 
 
@@ -55,7 +61,8 @@
       </div>
 
       <div class="col-6">
-        <div class="transactions"></div>
+          <div class="header"/>
+          <div class="transactions"></div>
       </div>
 
       <script src="js/dist-amp.js"></script>

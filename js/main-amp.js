@@ -13,9 +13,9 @@ var FilterModel = AmpersandModel.extend({
 
     toJSON: function() {
         return {
-            startDate: this.get('startDate').format('YYYY-MM-DD'),
-            endDate: this.get('endDate').format('YYYY-MM-DD'),
-            details: this.get('details')
+            startDate: this.startDate.format('YYYY-MM-DD'),
+            endDate: this.endDate.format('YYYY-MM-DD'),
+            details: this.details
         };
     },
 
@@ -89,4 +89,5 @@ var FilterPanelView = AmpersandView.extend({
 var filterModel = new FilterModel();
 new CalendarView({filter: filterModel});
 new FilterPanelView({filter: filterModel, el: $('.filter-panel').get(0)});
+//new TransactionsHeader({model: filterModel, el: $('.header').get(0)});
 
