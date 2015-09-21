@@ -1,7 +1,3 @@
-var models = require('./models-amp');
-var FilterModel = models.FilterModel;
-var TransactionsCollection = models.TransactionsCollection;
-
 var AmpersandView = require('ampersand-view');
 _ = require('underscore');
 var Handlebars = require('handlebars');
@@ -102,10 +98,7 @@ var TransactionsView = AmpersandView.extend({
     }
 });
 
-var filterModel = new FilterModel();
-var transactions = new TransactionsCollection([], {filter: filterModel});
-
-new CalendarView({filter: filterModel});
-new FilterPanelView({filter: filterModel, el: $('.filter-panel').get(0)});
-new TransactionsHeader({model: filterModel, el: $('.header').get(0)});
-new TransactionsView({collection: transactions, el: $('.transactions').get(0)});
+module.exports.CalendarView = CalendarView;
+module.exports.TransactionsHeader = TransactionsHeader;
+module.exports.TransactionsView = TransactionsView;
+module.exports.FilterPanelView = FilterPanelView;

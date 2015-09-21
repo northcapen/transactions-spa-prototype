@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch-js": "watchify js/main.js -o js/dist.js -v",
-    "watch-js-amp": "watchify js/main-amp.js -o js/dist-amp.js -v"
+    "watch-js-amp": "watchify js/app-amp.js -o js/dist-amp.js -v"
   },
   "author": "",
   "license": "ISC",
