@@ -1,6 +1,8 @@
 var AmpersandView = require('ampersand-view');
 _ = require('underscore');
 var Handlebars = require('handlebars');
+var $ = require('jquery');
+require('clndr');
 
 var CalendarView = AmpersandView.extend({
     className: 'cal1',

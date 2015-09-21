@@ -1,6 +1,8 @@
 var models = require('./models-amp');
 var views = require('./views-amp');
 
+var $ = require('jquery');
+
 app = {
     launch: function() {
         var filterModel = new models.FilterModel();
