@@ -1,12 +1,13 @@
 {
-  "name": "backbone-sample-2",
+  "name": "Panda-spa-prototype",
   "version": "1.0.0",
-  "description": "Backbone sample project",
+  "description": "Panda SPA prototype",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch-js": "watchify js/main.js -o js/dist.js -v",
-    "watch-js-amp": "watchify js/app-amp.js -o js/dist-amp.js -v"
+    "watch-js": "watchify js/main-backbone.js -o js/dist-backbone.js -v",
+    "watch-js-amp": "watchify js/app-amp.js -o js/dist-amp.js -v",
+    "build": "browserify js/main-backbone.js -o js/dist-backbone.js -v"
   },
   "author": "",
   "license": "ISC",
