@@ -1,14 +1,9 @@
-var app = {
-};
-window.app = app;
-
 var moment = require('moment');
 var momentRange = require('moment-range');
 var Backbone = require('backbone');
 var Handlebars = require('handlebars');
 _ = require('underscore');
 
-// Add this!
 if (window.__backboneAgent) {
     window.__backboneAgent.handleBackbone(Backbone);
 }
@@ -156,12 +151,6 @@ var FilterPanelView = Backbone.View.extend({
         return this;
     },
 
-   /* processKey: function(e) {
-        if(e.which === 13) {
-            this.submit();
-        }// enter key
-    },
-*/
     submit : function(e) {
         console.log('submit form');
         e.preventDefault();
@@ -172,7 +161,7 @@ var TransactionsView = Backbone.View.extend({
     el: '.transactions',
     template: Handlebars.compile($('#transactions-template').html()),
 
-    initialize: function (options) {
+    initialize: function () {
         this.listenTo(this.collection, 'update', this.render);
     },
 
